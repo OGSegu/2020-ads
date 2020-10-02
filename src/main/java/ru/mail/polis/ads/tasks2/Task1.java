@@ -25,5 +25,4 @@ public class Task1 {
         }
         System.out.println(sb.toString());
     }
-
 }
