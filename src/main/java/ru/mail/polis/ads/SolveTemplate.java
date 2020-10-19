@@ -12,7 +12,6 @@ import java.util.StringTokenizer;
  */
 public final class SolveTemplate {
     private SolveTemplate() {
-        // Should not be instantiated
     }
 
     private static void solve(final FastScanner in, final PrintWriter out) {
