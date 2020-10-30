@@ -4,7 +4,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -12,32 +14,53 @@ public class Task1 {
     public static void main(String[] args) {
         FastScanner in = new FastScanner(System.in);
         int n = in.nextInt();
-        int[] numbers = new int[n + 1];
+        int[] numbers = new int[n];
+        // Заполняем числа n = 3 -> 1,2,3
         for (int i = 1; i <= n; i++) {
             numbers[i - 1] = i;
         }
         int i = n;
-        List<Integer> tailIndex = new ArrayList<>();
-        while (i + 1 > i) {
-            tailIndex.add(i);
-            i--;
-        }
-        int min = Integer.MAX_VALUE;
-        int minIndex = -1;
-        for (int index : tailIndex) {
-            if (numbers[index] <= numbers[i - 1]) {
-               continue;
-            }
-            if (numbers[i - 1] < min) {
-                min = numbers[index];
-                minIndex = index;
-            }
-        }
-        // SWAP
-        int temp = numbers[minIndex];
-        numbers[i - 1] = temp;
-        numbers[minIndex] = numbers[i - 1];
+        try (PrintWriter out = new PrintWriter(System.out)) {
+            while (true) {
+                Arrays.stream(numbers).forEach(e -> out.write(e + " "));
+                out.write("\n");
+                List<Integer> tailIndex = new ArrayList<>();
+                // Заполнение индексами хвоста
+                do {
+                    tailIndex.add(i - 1);
+                    i--;
+                    if (i == 0) break;
+                } while (numbers[i - 1] > numbers[i]);
+                if (i == 0) break;
+                int changeElementIndex = i - 1;
+                // Поиск минимума для changeElement
+                int min = Integer.MAX_VALUE;
+                int minIndex = changeElementIndex;
+                for (int index : tailIndex) {
+                    if (numbers[index] < min && numbers[index] > numbers[changeElementIndex]) {
+                        min = numbers[minIndex];
+                        minIndex = index;
+                    }
+                }
+                // Замена элемента
+                int temp = numbers[changeElementIndex];
+                numbers[changeElementIndex] = numbers[minIndex];
+                numbers[minIndex] = temp;
 
+
+                // Разворот хвоста
+                int indexDescending = n - 1;
+                int indexIncrease = changeElementIndex + 1;
+                while (indexDescending > indexIncrease) {
+                    int temporary = numbers[indexDescending];
+                    numbers[indexDescending] = numbers[indexIncrease];
+                    numbers[indexIncrease] = temporary;
+                    indexIncrease++;
+                    indexDescending--;
+                }
+                i = n;
+            }
+        }
     }
 
 
