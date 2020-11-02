@@ -4,27 +4,31 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.util.Arrays;
 import java.util.StringTokenizer;
 
-public class Task2 {
+public class Task3 {
+
     public static void main(String[] args) {
         FastScanner in = new FastScanner(System.in);
-        long w = in.nextInt();
-        long h = in.nextInt();
-        long n = in.nextInt();
-
-        long l = Math.max(h, w);
-        long r = Math.max(h, w) * n;
-        while (l < r) {
-            long mid = (l + r) / 2;
-            long count = (mid / h) * (mid / w);
-            if (n <= count) {
-                r = mid;
-            } else {
-                l = mid + 1;
+        int amounts = in.nextInt();
+        int[] numbers = new int[amounts + 1];
+        for (int i = 1; i <= amounts; i++) numbers[i] = in.nextInt();
+        int[] d = new int[amounts + 1];
+        for (int i = 1; i <= amounts; i++) {
+            int min = 0;
+            for (int j = i - 1; j > 0; j--) {
+                if (numbers[j] == 0) continue;
+                if (numbers[i] % numbers[j] == 0) {
+                    if (d[j] > min) min = d[j];
+                }
             }
+            d[i] = min + 1;
         }
-        System.out.println(l);
+        try (PrintWriter out = new PrintWriter(System.out)) {
+            out.write(String.valueOf(Arrays.stream(d).max().getAsInt()));
+        }
     }
 
     private static class FastScanner {
