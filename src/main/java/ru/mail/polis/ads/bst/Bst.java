@@ -7,6 +7,7 @@ import org.jetbrains.annotations.Nullable;
  * Binary search tree with ordered operations support.
  */
 public interface Bst<Key extends Comparable<Key>, Value> {
+
     @Nullable Value get(@NotNull Key key);
 
     default boolean containsKey(@NotNull Key key) {
