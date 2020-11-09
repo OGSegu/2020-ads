@@ -63,9 +63,8 @@ public class AvlBst<Key extends Comparable<Key>, Value>
     @Override
     public Value remove(@NotNull Key key) {
         Node x = get(root, key);
-        if (x == null) {
+        if (x == null)
             return null;
-        }
         root = remove(root, key);
         size--;
         return x.value;
