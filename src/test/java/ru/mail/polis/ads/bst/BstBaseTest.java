@@ -313,6 +313,7 @@ class BstBaseTest {
         assertEquals(bst.ceil("0"), "1");
         assertEquals(bst.ceil("9"), "9");
         assertNull(bst.ceil("99"));
+
     }
 
     @Test

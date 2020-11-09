@@ -55,6 +55,8 @@ public class AvlBst<Key extends Comparable<Key>, Value>
         } else {
             x.value = value;
         }
+        fixHeight(x);
+        x = balance(x);
         return x;
     }
 
@@ -135,26 +137,66 @@ public class AvlBst<Key extends Comparable<Key>, Value>
 
     @Override
     public Key floor(@NotNull Key key) {
-        Node x = get(root, key);
-        if (x.left == null) return null;
-        return floor(x.left).key;
+        return floor(root, key, null);
     }
 
-    private Node floor(Node x) {
-        if (x.right == null) return x;
-        return floor(x.right);
+    private Key floor(Node node, Key key, Key maxKey) {
+        if (node == null) {
+            return maxKey;
+        }
+        if (node.key == key) {
+            maxKey = node.key;
+        }
+        if (key.compareTo(node.key) < 0) {
+            maxKey = floor(node.left, key, maxKey);
+        }
+        if (key.compareTo(node.key) > 0) {
+            maxKey = node.key;
+            maxKey = floor(node.right, key, maxKey);
+        }
+        return maxKey;
     }
 
     @Override
     public Key ceil(@NotNull Key key) {
-        Node x = get(root, key);
-        if (x.right == null) return null;
-        return ceil(x.right).key;
+        Node node = root;
+        return ceil(node, key);
     }
 
-    private Node ceil(Node x) {
-        if (x.left == null) return x;
-        return ceil(x.left);
+    private Key ceil(Node node, Key key) {
+        if (node == null) {
+            return null;
+        }
+        if (node.key == key) {
+            return node.key;
+        }
+        if (key.compareTo(node.key) < 0) {
+            return node.left == null ? node.key : ceil(node.left, key);
+        }
+        if (key.compareTo(node.key) > 0) {
+            return node.right == null ? null : ceil(node.right, key);
+        }
+        return node.key;
+    }
+
+    public Node balance(Node x) {
+        if (factor(x) == 2) {
+            if (factor(x.left) < 0) {
+                x.left = rotateLeft(x.left);
+            }
+            return rotateRight(x);
+        }
+        if (factor(x) == -2) {
+            if (factor(x.right) > 0) {
+                x.right = rotateRight(x.right);
+            }
+            return rotateLeft(x);
+        }
+        return x;
+    }
+
+    public int factor(Node x) {
+        return height(x.left) - height(x.right);
     }
 
     @Override
@@ -169,5 +211,27 @@ public class AvlBst<Key extends Comparable<Key>, Value>
 
     private int height(Node node) {
         return node == null ? 0 : node.height;
+    }
+
+    private void fixHeight(Node x) {
+        x.height = 1 + Math.max(height(x.left), height(x.right));
+    }
+
+    private Node rotateRight(Node y) {
+        Node x = y.left;
+        y.left = x.right;
+        x.right = y;
+        fixHeight(y);
+        fixHeight(x);
+        return x;
+    }
+
+    private Node rotateLeft(Node x) {
+        Node y = x.right;
+        x.right = y.left;
+        y.left = x;
+        fixHeight(x);
+        fixHeight(y);
+        return y;
     }
 }
