@@ -33,8 +33,9 @@ public class AvlBst<Key extends Comparable<Key>, Value>
 
     private Node get(Node x, Key key) {
         if (x == null) return null;
-        if (key.compareTo(x.key) < 0) return get(x.left, key);
-        if (key.compareTo(x.key) > 0) return get(x.right, key);
+        int comparedResult = key.compareTo(x.key);
+        if (comparedResult < 0) return get(x.left, key);
+        if (comparedResult > 0) return get(x.right, key);
         return x;
     }
 
@@ -48,9 +49,10 @@ public class AvlBst<Key extends Comparable<Key>, Value>
             size++;
             return new Node(key, value, 1);
         }
-        if (key.compareTo(x.key) < 0) {
+        int comparedResult = key.compareTo(x.key);
+        if (comparedResult < 0) {
             x.left = put(x.left, key, value);
-        } else if (key.compareTo(x.key) > 0) {
+        } else if (comparedResult > 0) {
             x.right = put(x.right, key, value);
         } else {
             x.value = value;
@@ -72,13 +74,12 @@ public class AvlBst<Key extends Comparable<Key>, Value>
 
     private Node remove(Node x, Key key) {
         if (x == null) return null;
-        if (key.compareTo(x.key) < 0) {
+        int comparedResult = key.compareTo(x.key);
+        if (comparedResult < 0) {
             x.left = remove(x.left, key);
-        }
-        if (key.compareTo(x.key) > 0) {
+        } else if (comparedResult > 0) {
             x.right = remove(x.right, key);
-        }
-        if (key.compareTo(x.key) == 0) {
+        } else {
             x = innerDelete(x);
         }
         return x;
@@ -146,10 +147,10 @@ public class AvlBst<Key extends Comparable<Key>, Value>
         if (node.key == key) {
             maxKey = node.key;
         }
-        if (key.compareTo(node.key) < 0) {
+        int comparedResult = key.compareTo(node.key);
+        if (comparedResult < 0) {
             maxKey = floor(node.left, key, maxKey);
-        }
-        if (key.compareTo(node.key) > 0) {
+        } else if (comparedResult > 0) {
             maxKey = node.key;
             maxKey = floor(node.right, key, maxKey);
         }
@@ -169,10 +170,10 @@ public class AvlBst<Key extends Comparable<Key>, Value>
         if (node.key == key) {
             return node.key;
         }
-        if (key.compareTo(node.key) < 0) {
+        int comparedResult = key.compareTo(node.key);
+        if (comparedResult < 0) {
             return node.left == null ? node.key : ceil(node.left, key);
-        }
-        if (key.compareTo(node.key) > 0) {
+        } else if (comparedResult > 0) {
             return node.right == null ? null : ceil(node.right, key);
         }
         return node.key;
