@@ -3,13 +3,11 @@ package ru.mail.polis.ads.hash;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.Objects;
 
-public class HashMapNode implements HashTable<String, String> {
+public class HashMapNode<Key extends Comparable<Key>, Value> implements HashTable<Key, Value> {
 
-    private String[] array;
+    private RedBlackBST<Key, Value>[] array;
 
     private int size;
     private float loadFactor = 0;
@@ -19,37 +17,48 @@ public class HashMapNode implements HashTable<String, String> {
     }
 
     public HashMapNode(int initialCapacity) {
-        this.array = new String[initialCapacity];
+        this.array = new RedBlackBST[initialCapacity];
     }
 
     @Nullable
     @Override
-    public String get(String key) {
+    public Value get(Key key) {
         int index = hash(key);
-        return array[index];
+        Bst<Key, Value> bst = array[index];
+        return bst == null ? null : bst.get(key);
     }
 
     @Override
-    public void put(@NotNull String key, @NotNull String value) {
-        if (loadFactor > 0.75F)
+    public void put(@NotNull Key key, @NotNull Value value) {
+        if (loadFactor > 0.3F)
             resize();
+       putIgnore(key, value);
+    }
+
+    private void putIgnore(Key key, Value value) {
         int index = hash(key);
-        if (array[index] == null)
+        RedBlackBST<Key, Value> bst = array[index];
+        if (bst == null)
+            bst = new RedBlackBST<>();
+        if (!bst.containsKey(key))
             size++;
-        array[index] = value;
+        bst.put(key, value);
+        array[index] = bst;
         loadFactor = size / (float) array.length;
     }
 
     @Nullable
     @Override
-    public String remove(@NotNull String key) {
-        String removedElement = get(key);
-        if (removedElement == null)
-            return null;
+    public Value remove(@NotNull Key key) {
         int index = hash(key);
-        array[index] = null;
+        Bst<Key, Value> bst = array[index];
+        if (bst == null)
+            return null;
+        Value removed = bst.remove(key);
+        if (removed == null)
+            return null;
         size--;
-        return removedElement;
+        return removed;
     }
 
     @Override
@@ -63,19 +72,23 @@ public class HashMapNode implements HashTable<String, String> {
     }
 
     private void resize() {
-        String[] newArray = new String[size * 2];
-        String[] oldArray = array.clone();
+        size = 0;
+        RedBlackBST<Key, Value>[] newArray = new RedBlackBST[array.length * 2];
+        RedBlackBST<Key, Value>[] oldArray = array;
         this.array = newArray;
-        for (String element : oldArray) {
-            if (element == null)
+        for (RedBlackBST<Key, Value> bst: oldArray) {
+            if (bst == null)
                 continue;
-            int newIndex = hash(element);
-            array[newIndex] = element;
+            for(RedBlackBST<Key, Value>.BinarySearchTreeIterator bstIterator = bst.iterator();
+                bstIterator.hasNext();) {
+                RedBlackBST<Key, Value>.Node current = bstIterator.next();
+                putIgnore(current.getKey(), current.getValue());
+            }
         }
     }
 
-    private int hash(String key) {
-        return Objects.hashCode(key) % array.length;
+    private int hash(Key key) {
+        return (Objects.hashCode(key) & 0x7FFFFFFF) % array.length;
     }
 
 }
