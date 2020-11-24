@@ -35,10 +35,10 @@ public interface Bst<Key, Value> {
         if ((key1 instanceof Comparable) && (key2 instanceof Comparable)) {
             return ((Comparable) key1).compareTo(key2);
         }
-            if (System.identityHashCode(key1) == System.identityHashCode(key2))
+            if (key1.equals(key2))
                 return 0;
             else
-                return System.identityHashCode(key1) > System.identityHashCode(key2) ? 1 : -1;
+                return key1.hashCode() > key2.hashCode() ? 1 : -1;
     }
     int size();
 
