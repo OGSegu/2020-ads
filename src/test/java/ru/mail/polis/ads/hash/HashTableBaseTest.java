@@ -236,7 +236,23 @@ class HashTableBaseTest {
         }
         assertEquals(reference.size(), table.size());
         for (Map.Entry<Key, String> entry: reference.entrySet()) {
-            assertEquals(entry.getValue(), table.get(entry.getKey()));
+            assertEquals(entry.getValue(), table.get(new Key(entry.getKey().value)));
+        }
+    }
+
+    @Test
+    void manyCollisions() {
+        HashTable<Key, String> table = newStrangeKeyTable();
+        HashMap<Key, String> reference = new HashMap<>();
+        Key key = new Key("1");
+        for (int i = 0; i < 10000; i++) {
+            String value = RandomStringUtils.random(100);
+            table.put(key, value);
+            reference.put(key, value);
+        }
+        assertEquals(reference.size(), table.size());
+        for (Map.Entry<Key, String> entry: reference.entrySet()) {
+            assertEquals(entry.getValue(), table.get(new Key(entry.getKey().value)));
         }
     }
 }
