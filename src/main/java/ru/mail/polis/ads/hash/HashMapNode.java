@@ -5,7 +5,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
-public class HashMapNode<Key extends Comparable<Key>, Value> implements HashTable<Key, Value> {
+public class HashMapNode<Key, Value> implements HashTable<Key, Value> {
 
     private RedBlackBST<Key, Value>[] array;
 

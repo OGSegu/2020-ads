@@ -3,13 +3,14 @@ package ru.mail.polis.ads.hash;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayDeque;
+import java.util.Comparator;
 import java.util.Deque;
 import java.util.Iterator;
 
 /**
  * LLRB implementation of binary search tree.
  */
-public class RedBlackBST<Key extends Comparable<Key>, Value>
+public class RedBlackBST<Key, Value>
         implements Bst<Key, Value> {
     private Node root;
 
@@ -90,7 +91,7 @@ public class RedBlackBST<Key extends Comparable<Key>, Value>
 
     private Node get(Node x, Key key) {
         if (x == null) return null;
-        int comparedResult = key.compareTo(x.key);
+        int comparedResult = compareTo(key, x.key);
         if (comparedResult < 0) return get(x.left, key);
         if (comparedResult > 0) return get(x.right, key);
         return x;
@@ -105,7 +106,7 @@ public class RedBlackBST<Key extends Comparable<Key>, Value>
             size++;
             return new Node(key, value, RED);
         }
-        int comparedResult = key.compareTo(x.key);
+        int comparedResult = compareTo(key, x.key);
         if (comparedResult < 0) {
             x.left = put(x.left, key, value);
         } else if (comparedResult > 0) {
@@ -130,7 +131,7 @@ public class RedBlackBST<Key extends Comparable<Key>, Value>
     private Node remove(Node x, Key key) {
         if (x == null)
             return null;
-        int comparedResult = key.compareTo(x.key);
+        int comparedResult = compareTo(key, x.key);
         if (comparedResult < 0) {
             if (x.left != null) {
                 if (!isRed(x.left) && !isRed(x.left.left)) {
@@ -245,7 +246,7 @@ public class RedBlackBST<Key extends Comparable<Key>, Value>
         if (node.key == key) {
             maxKey = node.key;
         }
-        int comparedResult = key.compareTo(node.key);
+        int comparedResult = compareTo(key, node.key);
         if (comparedResult < 0) {
             maxKey = floor(node.left, key, maxKey);
         } else if (comparedResult > 0) {
@@ -267,7 +268,7 @@ public class RedBlackBST<Key extends Comparable<Key>, Value>
         if (node.key == key) {
             return node.key;
         }
-        int comparedResult = key.compareTo(node.key);
+        int comparedResult = compareTo(key, node.key);
         if (comparedResult < 0) {
             return node.left == null ? node.key : ceil(node.left, key);
         } else if (comparedResult > 0) {

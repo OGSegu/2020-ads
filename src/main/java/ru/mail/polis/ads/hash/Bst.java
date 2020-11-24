@@ -2,10 +2,13 @@ package ru.mail.polis.ads.hash;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Comparator;
+
 /**
  * Binary search tree with ordered operations support.
  */
-public interface Bst<Key extends Comparable<Key>, Value> {
+public interface Bst<Key, Value> {
     @Nullable Value get(@NotNull Key key);
 
     default boolean containsKey(@NotNull Key key) {
@@ -28,6 +31,12 @@ public interface Bst<Key extends Comparable<Key>, Value> {
 
     @Nullable Key ceil(@NotNull Key key);
 
+    default int compareTo(Key key1, Key key2) {
+            if (System.identityHashCode(key1) == System.identityHashCode(key2))
+                return 0;
+            else
+                return System.identityHashCode(key1) > System.identityHashCode(key2) ? 1 : -1;
+    }
     int size();
 
     default boolean isEmpty() {
