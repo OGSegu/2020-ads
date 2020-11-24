@@ -32,6 +32,9 @@ public interface Bst<Key, Value> {
     @Nullable Key ceil(@NotNull Key key);
 
     default int compareTo(Key key1, Key key2) {
+        if ((key1 instanceof Comparable) && (key2 instanceof Comparable)) {
+            return ((Comparable) key1).compareTo(key2);
+        }
             if (System.identityHashCode(key1) == System.identityHashCode(key2))
                 return 0;
             else
