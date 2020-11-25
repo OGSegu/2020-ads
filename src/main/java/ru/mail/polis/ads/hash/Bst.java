@@ -8,7 +8,8 @@ import java.util.Comparator;
 /**
  * Binary search tree with ordered operations support.
  */
-public interface Bst<Key, Value> {
+public interface Bst<Key, Value> extends HashElement {
+
     @Nullable Value get(@NotNull Key key);
 
     default boolean containsKey(@NotNull Key key) {

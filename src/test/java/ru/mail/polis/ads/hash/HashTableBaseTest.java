@@ -238,6 +238,7 @@ class HashTableBaseTest {
         for (Map.Entry<Key, String> entry: reference.entrySet()) {
             assertEquals(entry.getValue(), table.get(new Key(entry.getKey().value)));
         }
+
     }
 
     @Test
