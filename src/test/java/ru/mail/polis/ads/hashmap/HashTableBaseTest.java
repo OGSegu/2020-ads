@@ -1,4 +1,4 @@
-package ru.mail.polis.ads.hash;
+package ru.mail.polis.ads.hashmap;
 
 import java.util.HashMap;
 import java.util.Map;

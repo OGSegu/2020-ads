@@ -1,4 +1,4 @@
-package ru.mail.polis.ads.hash;
+package ru.mail.polis.ads.hashmap;
 
 public class Node<Key, Value> implements HashElement {
     private final Key key;

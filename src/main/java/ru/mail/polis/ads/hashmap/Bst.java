@@ -1,9 +1,7 @@
-package ru.mail.polis.ads.hash;
+package ru.mail.polis.ads.hashmap;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Comparator;
 
 /**
  * Binary search tree with ordered operations support.

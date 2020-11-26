@@ -1,9 +1,8 @@
-package ru.mail.polis.ads.hash;
+package ru.mail.polis.ads.hashmap;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayDeque;
-import java.util.Comparator;
 import java.util.Deque;
 import java.util.Iterator;
 
