@@ -13,6 +13,9 @@ public class HashMapNode<Key, Value> implements HashTable<Key, Value> {
     private float loadFactor = 0;
     private final float depthThreshold = 3;
 
+    private int primeCounter = 0;
+    private final int[] primeNumbers = new int[] {37, 67, 131, 263, 541, 1087, 2179, 4363, 8731, 17467, 34939, 69899, 139801, 279607, 559217, 1118419};
+
     public HashMapNode() {
         this(16);
     }
@@ -42,7 +45,7 @@ public class HashMapNode<Key, Value> implements HashTable<Key, Value> {
 
     @Override
     public void put(@NotNull Key key, @NotNull Value value) {
-        if (loadFactor > 0.3F)
+        if (loadFactor > 0.75F)
             resize();
         putIgnore(key, value);
     }
@@ -75,6 +78,7 @@ public class HashMapNode<Key, Value> implements HashTable<Key, Value> {
                 depth++;
             }
             iterateNode.setNext(addNode);
+            size++;
             depth++;
             if (depth > depthThreshold) {
                 array[index] = nodeToBst((Node<Key, Value>) hashElement);
@@ -137,7 +141,7 @@ public class HashMapNode<Key, Value> implements HashTable<Key, Value> {
 
     private void resize() {
         size = 0;
-        HashElement[] newArray = new HashElement[array.length * 2];
+        HashElement[] newArray = new HashElement[primeNumbers[primeCounter++]];
         HashElement[] oldArray = array;
         this.array = newArray;
         for (HashElement hashElement : oldArray) {

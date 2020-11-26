@@ -16,7 +16,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * Basic tests on {@link HashTable}.
  */
 class HashTableBaseTest {
-
     // Intentionally non-comparable
     static class Key {
         final String value;
