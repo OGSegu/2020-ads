@@ -1,56 +1,52 @@
 package ru.mail.polis.ads.tasks9;
 
 import java.io.*;
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
 public class Task4 {
 
-    static List<AbstractMap.SimpleEntry<Integer, Integer>>[] edgeList;
     static boolean[] visited;
-
-    static final int INF = 100_000;
+    static int[] prev;
+    static int[] dist;
+    static final int INF = Integer.MAX_VALUE;
 
     public static void main(String[] args) {
         FastScanner in = new FastScanner(System.in);
 
         int vertexAmount = in.nextInt();
-        int edgeAmount = in.nextInt();
-        int from = in.nextInt();
-        int to = in.nextInt();
+        int edgesAmount = in.nextInt();
+        int from = in.nextInt() - 1;
+        int to = in.nextInt() - 1;
 
-
-        edgeList = new ArrayList[edgeAmount * 2];
-        visited = new boolean[vertexAmount];
-
-        for (int i = 0; i < edgeAmount; i++) {
-            int localFrom = in.nextInt() - 1;
-            int localTo = in.nextInt() - 1;
+        int[][] graph = new int[vertexAmount][vertexAmount];
+        for (int i = 0; i < edgesAmount; i++) {
+            int lFrom = in.nextInt();
+            int lTo = in.nextInt();
             int weight = in.nextInt();
-            if (edgeList[localFrom] == null)
-                edgeList[localFrom] = new ArrayList<>();
-            if (edgeList[localTo] == null)
-                edgeList[localTo] = new ArrayList<>();
-            edgeList[localFrom].add(new AbstractMap.SimpleEntry<>(localTo, weight));
-            edgeList[localTo].add(new AbstractMap.SimpleEntry<>(localFrom, weight));
+            graph[lFrom - 1][lTo - 1] = weight;
+            graph[lTo - 1][lFrom - 1] = weight;
         }
 
-
-        int[] dist = new int[vertexAmount];
-        int[] prev = new int[vertexAmount];
+        visited = new boolean[vertexAmount];
+        dist = new int[vertexAmount];
+        prev = new int[vertexAmount];
         for (int i = 0; i < vertexAmount; i++) {
             dist[i] = INF;
             prev[i] = -1;
         }
-        shortestPath(dist, from, to, vertexAmount, prev);
+        getShortestPath(vertexAmount, from, graph);
+        printPath(to);
+    }
+
+    private static void printPath(int finish) {
         try (PrintWriter out = new PrintWriter(System.out)) {
-            if (dist[to - 1] != INF) {
-                out.write(dist[to - 1] + "\n");
+            if (dist[finish] != INF) {
+                out.write(dist[finish] + "\n");
                 List<Integer> path = new ArrayList<>();
-                path.add(to - 1);
-                int j = prev[to - 1];
+                path.add(finish);
+                int j = prev[finish];
                 while (j != -1) {
                     path.add(j);
                     j = prev[j];
@@ -64,37 +60,33 @@ public class Task4 {
         }
     }
 
-    private static void shortestPath(int[] dist, int from, int to, int vertexAmount, int[] prev) {
-        dist[from - 1] = 0; // Вычитаем единицу так как работает с 0 индексами
-        visited[from - 1] = true;
-        int findFrom = from - 1;
-        int minIndex = 0;
-        for (int i = 0; i < vertexAmount; i++) {
-            visited[findFrom] = true;
-            int min = INF;
-            for (int j = 0; j < edgeList[findFrom].size(); j++) {
-                int indexTo = edgeList[findFrom].get(j).getKey();
-                if (indexTo < INF && !visited[indexTo]) {
-                    int weightTo = edgeList[findFrom].get(j).getValue() + dist[findFrom];
-                    if (dist[indexTo] > weightTo) {
-                        prev[indexTo] = findFrom;
-                    } else {
-                        continue;
-                    }
-                    dist[indexTo] = weightTo;
-                    if (weightTo < min) {
-                        min = weightTo;
-                        minIndex = indexTo;
-                        if (minIndex == to - 1) {
-                            return;
-                        }
+    private static void getShortestPath(int n, int start, int[][] graph) {
+        visited[start] = true;
+        dist[start] = 0;
+        int minDistance = 0;
+        int minVertex = start;
+
+        while (minDistance < INF) {
+            int current = minVertex;
+            visited[current] = true;
+            for (int i = 0; i < n; i++) {
+                if (graph[current][i] != 0) {
+                    if (dist[current] + graph[current][i] < dist[i]) {
+                        dist[i] = dist[current] + graph[current][i];
+                        prev[i] = current;
                     }
                 }
             }
-            findFrom = minIndex;
-
+            minDistance = INF;
+            for (int j = 0; j < n; ++j) {
+                if (!visited[j] && dist[j] < minDistance) {
+                    minDistance = dist[j];
+                    minVertex = j;
+                }
+            }
         }
     }
+
 
     private static class FastScanner {
         private final BufferedReader reader;
